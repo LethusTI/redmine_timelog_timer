@@ -4,16 +4,17 @@
 
 	$.timerlog_timer_i18n = {
 		_p: {
-			minutes: ['{0} minute', '{0} minutes'],
-			hours: ['{0} hour', '{0} hours'],
-			start: 'Start',
-			stop: 'Stop',
-			title: 'Timer',
-			activeTimer: 'You have a running timer.',
-			actionMerge: 'Merge with current',
-			remove: 'Stop & Remove',
-			openForm: 'Open form',
-			removeConfirm: 'Are you sure?'
+		    seconds: ['{0} second', '{0} seconds'],
+		    minutes: ['{0} minute', '{0} minutes'],
+		    hours: ['{0} hour', '{0} hours'],
+		    start: 'Start',
+		    stop: 'Stop',
+		    title: 'Timer',
+		    activeTimer: 'You have a running timer.',
+		    actionMerge: 'Merge with current',
+		    remove: 'Stop & Remove',
+		    openForm: 'Open form',
+		    removeConfirm: 'Are you sure?'
 		},
 		set: function(key, value)
 		{
@@ -146,7 +147,7 @@
 	function timerlog_timer()
 	{
 		var val, timer, startTime,
-			updateInterval = 30 * 1000,
+			updateInterval = 1000,
 			fieldSelector = '#time_entry_hours',
 			field = $(fieldSelector).eq(0),
 			event_namespace = '.timerlog_timer',
@@ -231,8 +232,8 @@
 					var diff = getTimestamp() - startTime,
 						secs = diff / 3600,
 						new_val = getVal(val + secs);
-					field.val(number_format(new_val, 2, '.', ''));
-					text.html(format_time(new_val));
+					field.val(number_format(new_val, 4, '.', ''));
+					text.html(format_time(val+secs));
 				}
 			}
 		}
@@ -390,15 +391,17 @@
 
 		function format_time(val)
 		{
-			var h = parseInt(val, 10),
-				m = parseInt((val - h) * 60, 10);
-			return (h ? lang._('hours', h) + ' ' : '') + lang._('minutes', (m > 0 && m < 10) ? '0' + m : m);
+		    var h = parseInt(val, 10),
+		    m = parseInt((val - h) * 60, 10),
+		    ss = parseInt(((val-h)-(m/60))*3600, 10);
+
+		    return lang._('hours', h) +' '+ lang._('minutes', m) + ' '+lang._('seconds', ss);
 		}
 
 
 		function getVal(val)
 		{
-			return Math.abs(parseFloat(number_format(val, 2, '.', ''))) || 0;
+			return Math.abs(parseFloat(number_format(val, 9, '.', ''))) || 0;
 		}
 
 		/**
